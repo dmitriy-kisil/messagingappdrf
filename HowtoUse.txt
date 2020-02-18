@@ -1,3 +1,4 @@
 Reference: https://steemit.com/utopian-io/@ajmaln/part-1-creating-a-simple-chat-app-with-djangorestframework
 heroku apps:create example
 heroku addons:create heroku-postgresql:hobby-dev
+git remote add origin git@github.com:Oysiyl/messagingappdrf.git
