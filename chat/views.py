@@ -24,20 +24,20 @@ class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MessageSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserList(generics.ListCreateAPIView):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-class MessageViewSet(viewsets.ModelViewSet):
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    API endpoint that allows groups to be viewed or edited.
+    API endpoint that allow GET UPDATE DELETE on users
     """
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class MessageViewSpecificUserSet(viewsets.ViewSet):
