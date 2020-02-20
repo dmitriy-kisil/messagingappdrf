@@ -10,10 +10,26 @@ from django.shortcuts import get_object_or_404
 
 class MessageList(generics.ListCreateAPIView):
     """
-    API endpoint show all messages
+    API endpoint show all messages. If detect authenticated user - show all related to him messages,
+    where he is sender or receiver of the message
     """
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+
+    def get(self, request):
+        """If request user is here, return only those messages, which are related to him"""
+        queryset = Message.objects.all()
+        if request.user.is_authenticated:
+            # Return only those messages, which have user as sender or receiver
+            queryset = Message.objects.filter(Q(receiver__username=request.user) | Q(sender__username=request.user))
+        response = []
+        for message in queryset.values():
+            sender_id, receiver_id = message["sender_id"], message["receiver_id"]
+            del message["id"], message["sender_id"], message["receiver_id"]
+            message["sender"] = User.objects.filter(id=sender_id).values('username')[0]['username']
+            message["receiver"] = User.objects.filter(id=receiver_id).values('username')[0]['username']
+            response.append(message)
+        return Response(response)
 
 
 class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -22,6 +38,15 @@ class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+
+    def delete(self, request, pk):
+        """Only allow to delete if logged user is receiver or sender of the message"""
+        message = Message.objects.get(pk=pk)
+        if request.user == message.receiver or request.user == message.sender:
+            message.delete()
+            return Response({"This message was succesfully removed"})
+        else:
+            return Response({"You are not allowed to delete a message because you are not the sender or receiver"})
 
 
 class UserList(generics.ListCreateAPIView):
@@ -74,13 +99,15 @@ class MessageViewSpecificUserSet(viewsets.ViewSet):
 
 class ReadMessageSet(viewsets.ViewSet):
     """
-    API endpoint to read message. After get any message by id, is_readed will be set to True to this message
+    API endpoint to read message by logged user
     """
     def retrieve(self, request, pk=None):
-        """After get any message which exists, set is_readed to True to this message"""
+        """Get message by id and update this status if user is receiver of the message"""
         queryset = Message.objects.all()
         message = get_object_or_404(queryset, pk=pk)
         serializer = MessageSerializer(message)
-        message.is_readed = True
-        message.save()
+        # When currently logged user is the receiver of the message, set is_readed to True, so message is readed
+        if request.user == message.receiver:
+            message.is_readed = True
+            message.save()
         return Response(serializer.data)
