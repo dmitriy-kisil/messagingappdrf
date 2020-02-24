@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',  # if use Debug = True
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -122,5 +124,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # location where django collect all static files
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # location where you will store your static files
-# STATICFILES_DIRS = [os.path.join(os.path.dirname(BASE_DIR), "static"), ]  # location for static outside any app
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # location where you will store your static files
+STATICFILES_DIRS = [os.path.join(os.path.dirname(BASE_DIR), "static"), ]  # location for static outside any app
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
