@@ -24,6 +24,8 @@ class MessageList(generics.ListCreateAPIView):
             queryset = Message.objects.filter(Q(receiver__username=request.user) | Q(sender__username=request.user))
         else:
             queryset = Message.objects.all()
+        if not queryset:
+            return Response({"Don't found any messages. Please, try again later"})
         response = prepare_queryset_to_json(queryset)
         return Response(response)
 
@@ -52,6 +54,15 @@ class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    def get(self, request):
+        """Return custom warning if there are not any users exists"""
+        queryset = Message.objects.all()
+        if not queryset:
+            return Response({"Don't found any users. Please, try again later"})
+        response = prepare_queryset_to_json(queryset)
+        return Response(response)
+
+
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -79,6 +90,8 @@ class MessageViewSpecificUserSet(viewsets.ViewSet):
             queryset = Message.objects.filter(custom_filter)
         else:
             queryset = Message.objects.all()
+        if not queryset:
+            return Response({"Don't found any messages.Please, try again later"})
         # Spend 4 hours to make serializer works, didn't succeed. Request return sender_id, receiver_id and id
         # as Response(queryset.values()). When use MessageSerializer(queryset) - getting error, that field `sender`
         # not in this queryset. Finally, I used python and manually set values and fields in response. So, if you
@@ -94,6 +107,8 @@ class ReadMessageSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         """Get message by id and update this status if user is receiver of the message"""
         queryset = Message.objects.all()
+        if not queryset:
+            return Response({"Don't found any messages.Please, again try later"})
         message = get_object_or_404(queryset, pk=pk)
         serializer = MessageSerializer(message)
         # When currently logged user is the receiver of the message, set is_readed to True, so message is readed
