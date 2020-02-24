@@ -125,7 +125,7 @@ STATIC_URL = '/static/'
 
 # location where django collect all static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # location where you will store your static files
-STATICFILES_DIRS = [os.path.join(os.path.dirname(BASE_DIR), "static"), ]  # location for static outside any app
+# STATICFILES_DIRS = [os.path.join(os.path.dirname(BASE_DIR), "static"), ]  # location for static outside any app
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
