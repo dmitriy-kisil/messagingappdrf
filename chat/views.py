@@ -6,6 +6,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from utils import prepare_queryset_to_json
 
 
 class MessageList(generics.ListCreateAPIView):
@@ -18,17 +19,12 @@ class MessageList(generics.ListCreateAPIView):
 
     def get(self, request):
         """If request user is here, return only those messages, which are related to him"""
-        queryset = Message.objects.all()
         if request.user.is_authenticated:
             # Return only those messages, which have user as sender or receiver
             queryset = Message.objects.filter(Q(receiver__username=request.user) | Q(sender__username=request.user))
-        response = []
-        for message in queryset.values():
-            sender_id, receiver_id = message["sender_id"], message["receiver_id"]
-            del message["id"], message["sender_id"], message["receiver_id"]
-            message["sender"] = User.objects.filter(id=sender_id).values('username')[0]['username']
-            message["receiver"] = User.objects.filter(id=receiver_id).values('username')[0]['username']
-            response.append(message)
+        else:
+            queryset = Message.objects.all()
+        response = prepare_queryset_to_json(queryset)
         return Response(response)
 
 
@@ -87,13 +83,7 @@ class MessageViewSpecificUserSet(viewsets.ViewSet):
         # as Response(queryset.values()). When use MessageSerializer(queryset) - getting error, that field `sender`
         # not in this queryset. Finally, I used python and manually set values and fields in response. So, if you
         # run request to this endpoint, you should see sender and receiver fields as username and without ids
-        response = []
-        for message in queryset.values():
-            sender_id, receiver_id = message["sender_id"], message["receiver_id"]
-            del message["id"], message["sender_id"], message["receiver_id"]
-            message["sender"] = User.objects.filter(id=sender_id).values('username')[0]['username']
-            message["receiver"] = User.objects.filter(id=receiver_id).values('username')[0]['username']
-            response.append(message)
+        response = prepare_queryset_to_json(queryset)
         return Response(response)
 
 
