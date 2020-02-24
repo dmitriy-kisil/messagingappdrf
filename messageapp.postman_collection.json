@@ -496,15 +496,13 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/chat/messages/",
+							"raw": "http://messagingappdrf.herokuapp.com/chat/messages/",
 							"protocol": "http",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"messagingappdrf",
+								"herokuapp",
+								"com"
 							],
-							"port": "8000",
 							"path": [
 								"chat",
 								"messages",
@@ -550,15 +548,13 @@
 							]
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/chat/messages_by_user/",
+							"raw": "http://messagingappdrf.herokuapp.com/chat/messages_by_user/",
 							"protocol": "http",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"messagingappdrf",
+								"herokuapp",
+								"com"
 							],
-							"port": "8000",
 							"path": [
 								"chat",
 								"messages_by_user",
@@ -626,19 +622,17 @@
 							]
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/chat/read_message/2/",
+							"raw": "http://messagingappdrf.herokuapp.com/chat/read_message/4/",
 							"protocol": "http",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"messagingappdrf",
+								"herokuapp",
+								"com"
 							],
-							"port": "8000",
 							"path": [
 								"chat",
 								"read_message",
-								"2",
+								"4",
 								""
 							],
 							"query": [
@@ -682,15 +676,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:8000/chat/users/",
+							"raw": "http://messagingappdrf.herokuapp.com/chat/users/",
 							"protocol": "http",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"messagingappdrf",
+								"herokuapp",
+								"com"
 							],
-							"port": "8000",
 							"path": [
 								"chat",
 								"users",
